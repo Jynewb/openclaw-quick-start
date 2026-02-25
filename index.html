@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw 快速部署指南 - 粉丝专享版</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1a1f2e;
+            --accent-cyan: #00f5ff;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #2d3748;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 2px; }
+
+        .logo {
+            padding: 0 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .logo h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo .version {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .nav-section {
+            padding: 0 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            padding: 0 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 245, 255, 0.1);
+            color: var(--accent-cyan);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.15), rgba(168, 85, 247, 0.15));
+            color: var(--accent-cyan);
+            border-left: 3px solid var(--accent-cyan);
+        }
+
+        .nav-item .icon {
+            width: 20px;
+            margin-right: 0.75rem;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 3rem 4rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.05), rgba(168, 85, 247, 0.05));
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 245, 255, 0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-number {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-right: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-title .icon { margin-right: 0.75rem; font-size: 1.25rem; }
+
+        .deploy-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .deploy-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .deploy-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-4px);
+        }
+
+        .deploy-card.recommended {
+            border-color: var(--accent-purple);
+            position: relative;
+        }
+
+        .deploy-card.recommended::after {
+            content: '推荐';
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .deploy-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(168, 85, 247, 0.2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .deploy-card h3 { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .deploy-card p { color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem; }
+
+        .deploy-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .deploy-tag {
+            padding: 0.25rem 0.75rem;
+            background: rgba(0, 245, 255, 0.1);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+        }
+
+        .steps { counter-reset: step; }
+
+        .step {
+            position: relative;
+            padding-left: 3.5rem;
+            padding-bottom: 2rem;
+            border-left: 2px solid var(--border-color);
+            margin-left: 1rem;
+        }
+
+        .step:last-child { border-left-color: transparent; padding-bottom: 0; }
+
+        .step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: -1rem;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .step-title { font-weight: 600; margin-bottom: 0.75rem; color: var(--text-primary); }
+        .step-content { color: var(--text-secondary); }
+
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .alert-icon { margin-right: 0.75rem; font-size: 1.25rem; flex-shrink: 0; }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: var(--accent-orange);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--accent-green);
+        }
+
+        .alert-info {
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            color: var(--accent-cyan);
+        }
+
+        .code-block {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .code-lang {
+            font-size: 0.75rem;
+            color: var(--accent-purple);
+            font-weight: 500;
+        }
+
+        .code-copy {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .code-copy:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+
+        pre {
+            padding: 1.25rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
+        code { font-family: 'JetBrains Mono', monospace; }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .feature-item {
+            background: rgba(0, 245, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .feature-item .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .feature-item .title { font-weight: 600; margin-bottom: 0.25rem; }
+        .feature-item .desc { font-size: 0.8rem; color: var(--text-secondary); }
+
+        .checklist { list-style: none; padding: 0; }
+        .checklist li {
+            padding: 0.75rem 0 0.75rem 2rem;
+            position: relative;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .checklist li:last-child { border-bottom: none; }
+        .checklist li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+        th {
+            background: var(--bg-secondary);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            border-bottom: 2px solid var(--accent-cyan);
+        }
+        td { padding: 1rem; border-bottom: 1px solid var(--border-color); }
+        tr:hover td { background: rgba(0, 245, 255, 0.05); }
+
+        @media (max-width: 1024px) {
+            .sidebar { width: 240px; }
+            .main-content { margin-left: 240px; padding: 2rem; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 1.5rem; }
+            .hero h1 { font-size: 1.75rem; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>🦞 OpenClaw</h1>
+            <div class="version">快速部署指南 · 粉丝专享版</div>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">开始</div>
+            <a href="#hero" class="nav-item"><span class="icon">🏠</span>概览</a>
+            <a href="#features" class="nav-item"><span class="icon">✨</span>功能特色</a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">火山引擎</div>
+            <a href="#volcengine-ecs" class="nav-item"><span class="icon">☁️</span>创建服务器</a>
+            <a href="#volcengine-ark" class="nav-item"><span class="icon">🤖</span>开通方舟模型</a>
+            <a href="#volcengine-feishu" class="nav-item"><span class="icon">📄</span>创建飞书机器人</a>
+            <a href="#volcengine-config" class="nav-item"><span class="icon">⚙️</span>配置集成</a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">阿里云</div>
+            <a href="#aliyun" class="nav-item"><span class="icon">☁️</span>无影云电脑</a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">进阶</div>
+            <a href="#coding-plan" class="nav-item"><span class="icon">💰</span>Coding Plan</a>
+            <a href="#im" class="nav-item"><span class="icon">💬</span>其他IM接入</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section id="hero" class="hero">
+            <div class="hero-badge">2026年2月最新版</div>
+            <h1>OpenClaw <span>快速部署</span>指南</h1>
+            <p>从零开始，手把手教你部署自己的AI助手<br>两种云平台方案，总有一款适合你</p>
+        </section>
+
+        <!-- 功能特色 -->
+        <section id="features" class="section">
+            <div class="section-header">
+                <div class="section-number">✨</div>
+                <h2 class="section-title">OpenClaw 是什么？</h2>
+            </div>
+
+            <div class="card">
+                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">
+                    <strong>OpenClaw</strong>（原名Moltbot）是一款<strong>开源的本地优先AI代理与自动化平台</strong>。你可以通过它将多渠道通信能力与大语言模型深度集成，创建拥有持久记忆与主动执行能力的定制化AI助理。
+                </p>
+
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="icon">🤖</div>
+                        <div class="title">多模型支持</div>
+                        <div class="desc">Doubao、GLM、Kimi、DeepSeek等</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="icon">💬</div>
+                        <div class="title">多渠道接入</div>
+                        <div class="desc">飞书、钉钉、企业微信、QQ</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="icon">🎨</div>
+                        <div class="title">多模态能力</div>
+                        <div class="desc">原生支持生图、生视频</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="icon">⚡</div>
+                        <div class="title">丰富Skills</div>
+                        <div class="desc">集成AgentKit常用技能</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 选择方案 -->
+        <section class="section">
+            <h2 style="text-align: center; margin-bottom: 2rem;">🎯 选择你的部署方案</h2>
+            <div class="deploy-options">
+                <div class="deploy-card recommended">
+                    <div class="deploy-icon">🌋</div>
+                    <h3>火山引擎 ECS</h3>
+                    <p>官方应用模板，一键部署，支持飞书集成</p>
+                    <div class="deploy-tags">
+                        <span class="deploy-tag">官方模板</span>
+                        <span class="deploy-tag">功能完整</span>
+                        <span class="deploy-tag">多模型</span>
+                    </div>
+                </div>
+                
+                <div class="deploy-card">
+                    <div class="deploy-icon">☁️</div>
+                    <h3>阿里云无影云电脑</h3>
+                    <p>零门槛，无需服务器知识，包月套餐</p>
+                    <div class="deploy-tags">
+                        <span class="deploy-tag">零门槛</span>
+                        <span class="deploy-tag">多端支持</span>
+                        <span class="deploy-tag">7×24运行</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 火山引擎部署 - 创建ECS -->
+        <section id="volcengine-ecs" class="section">
+            <div class="section-header">
+                <div class="section-number">01</div>
+                <h2 class="section-title">火山引擎：创建云服务器</h2>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><span class="icon">🛒</span>购买配置参数</h3>
+                
+                <div class="table-wrapper">
+                    <table>
+                        <tr>
+                            <th>参数</th>
+                            <th>推荐配置</th>
+                            <th>说明</th>
+                        </tr>
+                        <tr>
+                            <td><strong>应用模板</strong></td>
+                            <td>OpenClaw（Moltbot）</td>
+                            <td>必选！选择官方模板</td>
+                        </tr>
+                        <tr>
+                            <td><strong>计费类型</strong></td>
+                            <td>包年包月</td>
+                            <td>长期使用更划算</td>
+                        </tr>
+                        <tr>
+                            <td><strong>地域</strong></td>
+                            <td>华东2（上海）</td>
+                            <td>支持：广州、北京、上海、雅加达</td>
+                        </tr>
+                        <tr>
+                            <td><strong>套餐规格</strong></td>
+                            <td>2 vCPU / 2 GiB 内存</td>
+                            <td>最低配置即可，推荐4G内存</td>
+                        </tr>
+                        <tr>
+                            <td><strong>登录密码</strong></td>
+                            <td>自己设置</td>
+                            <td>记住密码，后面要用</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="alert alert-success">
+                    <span class="alert-icon">✅</span>
+                    <div>
+                        <strong>推荐开启：</strong>
+                        <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+                            <li><strong>AI助手安全功能</strong> - 防御提示词注入、敏感信息泄露、高危操作</li>
+                            <li><strong>关联云服务</strong> - 支持监控、升级等功能</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 火山引擎部署 - 开通方舟 -->
+        <section id="volcengine-ark" class="section">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <h2 class="section-title">火山引擎：开通方舟大模型</h2>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><span class="icon">🔑</span>获取API Key 和 Model ID</h3>
+                
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-title">登录方舟控制台</div>
+                        <div class="step-content">
+                            访问 <a href="https://console.volcengine.com/ark" style="color: var(--accent-cyan);">火山方舟控制台</a>，开通大模型服务
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">创建API Key</div>
+                        <div class="step-content">
+                            左侧菜单：系统管理 → API Key管理 → 创建API Key<br>
+                            <span style="color: var(--accent-orange);">⚠️ API Key只显示一次，务必保存！</span>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">获取Model ID</div>
+                        <div class="step-content">
+                            左侧菜单：智能广场 → 模型广场 → 选择模型（如Doubao-Seed-Code）→ 复制Model ID
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <span class="alert-icon">💡</span>
+                    <div>
+                        <strong>支持的模型：</strong>
+                        <br>Doubao-Seed-Code、GLM-4.7、DeepSeek-V3.2、Kimi-K2-Thinking、Kimi-K2.5
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 火山引擎部署 - 创建飞书机器人 -->
+        <section id="volcengine-feishu" class="section">
+            <div class="section-header">
+                <div class="section-number">03</div>
+                <h2 class="section-title">火山引擎：创建飞书机器人</h2>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><span class="icon">📄</span>飞书开放平台配置</h3>
+                
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-title">创建企业自建应用</div>
+                        <div class="step-content">
+                            访问 <a href="https://open.feishu.cn/" style="color: var(--accent-cyan);">飞书开发者平台</a> → 创建企业自建应用 → 填写名称、描述、图标
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">添加机器人能力</div>
+                        <div class="step-content">
+                            左侧菜单：应用能力 → 添加应用能力 → 按能力添加 → 机器人
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">配置权限（重要！）</div>
+                        <div class="step-content">
+                            左侧菜单：开发配置 → 权限管理 → 批量导入/导出权限<br>
+                            复制以下JSON导入：
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">JSON</span>
+                                    <button class="code-copy" onclick="copyCode(this)">复制</button>
+                                </div>
+                                <pre><code>{
+  "scopes": {
+    "tenant": [
+      "im:chat:read", "im:chat:update",
+      "im:message:readonly", "im:message:send_as_bot",
+      "im:message.group_at_msg:readonly", "im:message.p2p_msg:readonly",
+      "contact:contact.base:readonly"
+    ]
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">获取App ID和App Secret</div>
+                        <div class="step-content">
+                            左侧菜单：基础信息 → 凭证与基础信息 → 复制App ID和App Secret<br>
+                            <span style="color: var(--accent-orange);">⚠️ 这两个信息后面配置要用！</span>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">发布应用</div>
+                        <div class="step-content">
+                            点击顶部「创建版本」→ 保存 → 确认发布
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 火山引擎部署 - 配置集成 -->
+        <section id="volcengine-config" class="section">
+            <div class="section-header">
+                <div class="section-number">04</div>
+                <h2 class="section-title">火山引擎：配置集成命令</h2>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><span class="icon">💻</span>SSH登录服务器执行配置</h3>
+                
+                <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                    登录你的火山引擎云服务器，执行以下命令（替换成你自己的信息）：
+                </p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Bash</span>
+                        <button class="code-copy" onclick="copyCode(this)">复制</button>
+                    </div>
+                    <pre><code>curl -fsSL https://openclaw.tos-cn-beijing.volces.com/setup.sh | bash -s -- \
+    --ark-coding-plan "true" \
+    --ark-model-id "doubao-seed-code" \
+    --ark-api-key "替换为你的方舟API Key" \
+    --feishu-app-id "替换为你的飞书App ID" \
+    --feishu-app-secret "替换为你的飞书App Secret"</code></pre>
+                </div>
+
+                <div class="table-wrapper" style="margin-top: 1.5rem;">
+                    <table>
+                        <tr>
+                            <th>参数</th>
+                            <th>说明</th>
+                        </tr>
+                        <tr>
+                            <td><code>--ark-coding-plan</code></td>
+                            <td>是否使用Coding Plan订阅（推荐true）</td>
+                        </tr>
+                        <tr>
+                            <td><code>--ark-model-id</code></td>
+                            <td>模型ID：doubao-seed-code / glm-4.7 / kimi-k2.5 等</td>
+                        </tr>
+                        <tr>
+                            <td><code>--ark-api-key</code></td>
+                            <td>方舟API Key</td>
+                        </tr>
+                        <tr>
+                            <td><code>--feishu-app-id</code></td>
+                            <td>飞书应用App ID</td>
+                        </tr>
+                        <tr>
+                            <td><code>--feishu-app-secret</code></td>
+                            <td>飞书应用App Secret</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><span class="icon">🔗</span>配置飞书事件回调</h3>
+                
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-title">配置事件订阅</div>
+                        <div class="step-content">
+                            飞书开发者平台 → 开发配置 → 事件与回调 → 事件配置<br>
+                            订阅方式选择「使用长连接接收事件」
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">添加事件</div>
+                        <div class="step-content">
+                            添加事件 → 应用身份订阅 → 勾选「接收消息」
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">配置回调</div>
+                        <div class="step-content">
+                            回调配置 → 订阅方式选择「使用长连接接收回调」
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">重新发布应用</div>
+                        <div class="step-content">
+                            创建新版本 → 保存 → 确认发布
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">配对机器人</div>
+                        <div class="step-content">
+                            在飞书中向机器人发送任意消息 → 复制配对命令 → 在服务器执行配对命令
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-success">
+                <span class="alert-icon">🎉</span>
+                <div>
+                    <strong>完成！</strong>现在你可以在飞书中与AI助手对话了！
+                </div>
+            </div>
+        </section>
+
+        <!-- 阿里云无影云电脑 -->
+        <section id="aliyun" class="section">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <h2 class="section-title">阿里云：无影云电脑部署</h2>
+            </div>
+
+            <div class="alert alert-success">
+                <span class="alert-icon">✨</span>
+                <div>
+                    <strong>零门槛方案！</strong>无需购买服务器、无需配置环境，一键部署OpenClaw。
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><span class="icon">🛒</span>购买方式</h3>
+                
+                <div class="deploy-options">
+                    <div class="deploy-card">
+                        <div class="deploy-icon">💻</div>
+                        <h3>PC端</h3>
+                        <p>登录<a href="https://wuying.aliyun.com" style="color: var(--accent-cyan);">无影云电脑网页版</a>，在商城购买OpenClaw套餐</p>
+                    </div>
+                    <div class="deploy-card">
+                        <div class="deploy-icon">📱</div>
+                        <h3>移动端</h3>
+                        <p>支付宝/微信小程序搜索「无影云电脑」，购买同款套餐</p>
+                    </div>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-top: 1rem;">
+                    套餐内容：<strong>无影云电脑个人版黄金款月卡（含2000核时）</strong>
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><span class="icon">🔄</span>已有云电脑？变更镜像</h3>
+                
+                <div class="alert alert-warning">
+                    <span class="alert-icon">⚠️</span>
+                    <div>
+                        <strong>警告：</strong>变更镜像会清除系统盘所有数据，请提前备份！
+                    </div>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-title">找到云电脑</div>
+                        <div class="step-content">找到已有的云电脑 → 点击「管理」</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">选择镜像</div>
+                        <div class="step-content">选择「镜像」→ 点击「变更镜像」</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">输入镜像码</div>
+                        <div class="step-content">点击「通过镜像码收藏镜像」→ 输入：<code>OpenClaw</code>（注意大小写）</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">确认变更</div>
+                        <div class="step-content">确定关机并变更 → 等待镜像更新完成</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><span class="icon">⏰</span>配置7×24运行</h3>
+                <p style="color: var(--text-secondary);">
+                    如需7×24运行OpenClaw：云电脑管理 → 策略 → <strong>关闭「断连定时关机/休眠」</strong>
+                </p>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title"><span class="icon">⚙️</span>配置API Key</h3>
+                
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-title">下载客户端</div>
+                        <div class="step-content">
+                            <a href="https://www.aliyun.com/product/wuying/download" style="color: var(--accent-cyan);">下载无影客户端</a>（支持macOS、Windows、Android、iOS）
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">启动云电脑</div>
+                        <div class="step-content">登录客户端 → 启动OpenClaw云电脑</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">配置模型</div>
+                        <div class="step-content">
+                            打开OpenClaw配置面板 → 模型设置：
+                            <div class="code-block">
+                                <pre><code>模型：qwen3-max-2026-01-23
+BASE URL：https://dashscope.aliyuncs.com/compatible-mode/v1
+API KEY：前往阿里云百炼获取</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">获取阿里云百炼API Key</div>
+                        <div class="step-content">
+                            <ol style="margin-top: 0.5rem; padding-left: 1.25rem;">
+                                <li>访问<a href="https://bailian.console.aliyun.com/?tab=model#/api-key" style="color: var(--accent-cyan);">阿里云百炼密钥管理</a></li>
+                                <li>点击「创建API Key」</li>
+                                <li>保存API Key（以sk-开头）</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <span class="alert-icon">💡</span>
+                    <div>
+                        <strong>省钱技巧：</strong>订阅<a href="https://www.aliyun.com/benefit/scene/codingplan" style="color: var(--accent-cyan);">阿里云百炼Coding Plan</a>，包月9.9元起，享受固定月费和调用额度。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Coding Plan配置 -->
+        <section id="coding-plan" class="section">
+            <div class="section-header">
+                <div class="section-number">💰</div>
+                <h2 class="section-title">Coding Plan 配置</h2>
+            </div>
+
+            <div class="card">
+                <p style="margin-bottom: 1rem;">
+                    <strong>Coding Plan</strong>是为开发者量身打造的AI Coding场景订阅服务，支持主流Code模型的使用和自由切换。
+                </p>
+
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <div class="icon">💵</div>
+                        <div class="title">火山方舟</div>
+                        <div class="desc">包月9.9元起</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="icon">💵</div>
+                        <div class="title">阿里云百炼</div>
+                        <div class="desc">固定月费+额度</div>
+                    </div>
+                </div>
+
+                <h4 style="margin: 1.5rem 0 1rem;">支持的模型</h4>
+                <ul class="checklist">
+                    <li>Doubao-Seed-Code</li>
+                    <li>GLM-4.7</li>
+                    <li>DeepSeek-V3.2</li>
+                    <li>Kimi-K2-Thinking</li>
+                    <li>Kimi-K2.5</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- IM接入 -->
+        <section id="im" class="section">
+            <div class="section-header">
+                <div class="section-number">💬</div>
+                <h2 class="section-title">其他IM平台接入</h2>
+            </div>
+
+            <div class="card">
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">
+                    OpenClaw支持多种IM平台接入，镜像已封装接入功能，只需配置对应密钥即可。
+                </p>
+
+                <div class="deploy-options">
+                    <div class="deploy-card">
+                        <div class="deploy-icon">📌</div>
+                        <h3>钉钉</h3>
+                        <p>创建钉钉应用与机器人，配置权限</p>
+                        <div class="deploy-tags">
+                            <span class="deploy-tag">企业通讯</span>
+                        </div>
+                    </div>
+                    <div class="deploy-card">
+                        <div class="deploy-icon">🐧</div>
+                        <h3>QQ</h3>
+                        <p>创建QQ机器人与QQ频道</p>
+                        <div class="deploy-tags">
+                            <span class="deploy-tag">QQ频道</span>
+                        </div>
+                    </div>
+                    <div class="deploy-card">
+                        <div class="deploy-icon">🏢</div>
+                        <h3>企业微信</h3>
+                        <p>创建企业微信应用</p>
+                        <div class="deploy-tags">
+                            <span class="deploy-tag">企业办公</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer style="text-align: center; padding: 3rem 0; border-top: 1px solid var(--border-color); margin-top: 4rem;">
+            <p style="color: var(--text-muted); font-size: 0.875rem;">
+                🦞 OpenClaw 快速部署指南 · 粉丝专享版 · 2026年2月<br>
+                <span style="color: var(--text-secondary);">
+                    参考文档：
+                    <a href="https://www.volcengine.com/docs/6396/2189942" style="color: var(--accent-cyan);">火山引擎</a> · 
+                    <a href="https://help.aliyun.com/zh/edsp/getting-started/quickly-create-openclaw-through-wuying-cloud-computer-personal-edition" style="color: var(--accent-cyan);">阿里云无影</a>
+                </span>
+            </p>
+        </footer>
+    </main>
+
+    <script>
+        // 导航高亮
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('section[id]');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // 代码复制
+        function copyCode(btn) {
+            const code = btn.closest('.code-block').querySelector('code').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = '已复制!';
+                setTimeout(() => { btn.textContent = '复制'; }, 2000);
+            });
+        }
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
